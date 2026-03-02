@@ -33,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // ---------- API CALL ----------
-    $api_url = "https://scamshield-luez.onrender.com/predict";
+    $base_api_url = "https://scamshield-cplu.onrender.com";
     $prediction = "";
     $confidence = 0;
     $reason = "";
     $extracted_text = "";
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $api_url = "https://scamshield-luez.onrender.com/predict-image";
+        $api_url = $base_api_url . "/predict-image";
         $file_tmp = $_FILES['image']['tmp_name'];
         $file_name = $_FILES['image']['name'];
         $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
@@ -79,7 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($httpCode !== 200 || !$response) {
-                echo json_encode(["status" => "error", "message" => "API Error (Code $httpCode): Unable to reach analysis engine."]);
+                $responseData = json_decode($response, true);
+                $msg = $responseData['message'] ?? "API Error (Code $httpCode)";
+                if (isset($responseData['details'])) {
+                    // Log details for admin but show short message to user
+                    error_log("API Debug Details: " . $responseData['details']);
+                    $msg .= " - " . substr($responseData['details'], 0, 100) . "...";
+                }
+                echo json_encode(["status" => "error", "message" => $msg]);
                 exit();
             }
 
@@ -105,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         // Text-based analysis
+        $api_url = $base_api_url . "/predict";
         $data = json_encode(["text" => $job_text]);
         $ch = curl_init($api_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

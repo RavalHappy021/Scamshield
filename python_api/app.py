@@ -9,9 +9,6 @@ app = Flask(__name__)
 
 # Optional: Set tesseract path if it's not in your PATH
 # Set tesseract path
-# 1. Use environment variable if set
-# 2. Use common Linux path (Render, Ubuntu, etc.)
-# 3. Fallback to common Windows path
 tesseract_path = os.getenv('TESSERACT_PATH')
 if not tesseract_path:
     if os.name == 'posix':
@@ -19,8 +16,10 @@ if not tesseract_path:
     else:
         tesseract_path = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-if os.path.exists(tesseract_path) or os.name == 'posix':
-    pytesseract.pytesseract.tesseract_cmd = tesseract_path
+# Only force the path if we are on Windows or if TESSERACT_PATH is explicitly set
+if os.getenv('TESSERACT_PATH') or os.name != 'posix':
+    if os.path.exists(tesseract_path):
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 # Load trained model and vectorizer
 model = pickle.load(open("model.pkl", "rb"))
@@ -117,8 +116,14 @@ def predict_image():
             "message": f"Tesseract OCR not found. Please ensure Tesseract is installed and the path '{tesseract_path}' is correct."
         }), 200
     except Exception as e:
-        print(f"Prediction Error: {str(e)}")
-        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 500
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Prediction Error:\n{error_details}")
+        return jsonify({
+            "status": "error", 
+            "message": f"Server Error: {str(e)}",
+            "details": error_details
+        }), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
