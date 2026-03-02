@@ -127,6 +127,10 @@ body {
           <a class="nav-link" href="tips.php">Safety Tips</a>
         </li>
 
+        <li class="nav-item">
+          <a class="nav-link" href="contact.php">Contact Us</a>
+        </li>
+
         <?php if(isset($_SESSION['user'])){ ?>
           <li class="nav-item dropdown ms-lg-3">
             <button class="welcome-box dropdown-toggle border-0" id="userDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
