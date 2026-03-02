@@ -1,0 +1,17 @@
+# Python
+python_api/__pycache__/
+python_api/*.pyc
+python_api/venv/
+python_api/.env
+
+# PHP
+php_app/uploads/*
+!php_app/uploads/.gitkeep
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
