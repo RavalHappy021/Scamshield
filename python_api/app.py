@@ -17,6 +17,14 @@ if tesseract_path:
 model = pickle.load(open("model.pkl", "rb"))
 vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({
+        "status": "online",
+        "message": "ScamShield AI API is running",
+        "endpoints": ["/predict", "/predict-image"]
+    })
+
 def clean_text(text):
     text = re.sub(r'\W', ' ', text)
     return text.lower()
