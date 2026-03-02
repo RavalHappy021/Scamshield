@@ -24,8 +24,8 @@ ScamShield is a web-based application designed to help users identify potentiall
 - Tesseract OCR installed on your system.
 
 ### 1. Database Setup
-- Import the `scamshield_db.sql` file into your MySQL database.
-- Update `php_app/db.php` with your database credentials.
+- Import the `scamshield_db.sql` file (found in the root directory) into your MySQL database using phpMyAdmin or the `mysql` command line.
+- Update `php_app/db.php` with your database credentials (host, username, password, database name).
 
 ### 2. Python API Setup
 - Navigate to the `python_api` directory.

@@ -8,7 +8,10 @@ import os
 app = Flask(__name__)
 
 # Optional: Set tesseract path if it's not in your PATH
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# Set tesseract path (default for Windows, or use TESSERACT_PATH env var)
+tesseract_path = os.getenv('TESSERACT_PATH', r'C:\Program Files\Tesseract-OCR\tesseract.exe')
+if tesseract_path:
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 # Load trained model and vectorizer
 model = pickle.load(open("model.pkl", "rb"))
@@ -94,7 +97,7 @@ def predict_image():
         print("Error: Tesseract OCR not found.")
         return jsonify({
             "status": "error", 
-            "message": "Tesseract OCR not found. Please ensure Tesseract is installed at C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+            "message": f"Tesseract OCR not found. Please ensure Tesseract is installed and the path '{tesseract_path}' is correct."
         }), 200
     except Exception as e:
         print(f"Prediction Error: {str(e)}")
