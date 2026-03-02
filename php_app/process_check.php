@@ -51,45 +51,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        $upload_path = "uploads/" . time() . "_" . $file_name;
+        $upload_dir = "uploads/";
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        $upload_path = $upload_dir . time() . "_" . $file_name;
         if (move_uploaded_file($file_tmp, $upload_path)) {
+            // Send image to Python API
+            $data = [
+                'image' => new CURLFile($upload_path)
+            ];
+
             $ch = curl_init($api_url);
-            $cfile = new CURLFile($upload_path, $_FILES['image']['type'], $_FILES['image']['name']);
-            $data = ['image' => $cfile];
-            
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-            
+            curl_setopt($ch, CURLOPT_USERAGENT, 'ScamShield-Client/1.0');
+
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
-            
-            unlink($upload_path); // Delete temp file
 
             if ($httpCode === 0) {
-                echo json_encode(["status" => "error", "message" => "API Connection Failed (Image): The remote detection service is unreachable."]);
+                echo json_encode(["status" => "error", "message" => "API Connection Failed: The remote detection service is unreachable."]);
                 exit();
             }
 
             if ($httpCode !== 200 || !$response) {
-                echo json_encode(["status" => "error", "message" => "API Connection Failed (Image): Server returned error code " . $httpCode]);
+                echo json_encode(["status" => "error", "message" => "API Error (Code $httpCode): Unable to reach analysis engine."]);
                 exit();
             }
 
             $responseData = json_decode($response, true);
-            if (isset($responseData['status']) && $responseData['status'] === 'success') {
+            if (is_array($responseData) && $responseData['status'] === 'success') {
                 $prediction = $responseData['result'];
                 $confidence = $responseData['confidence'];
-                $reason = $responseData['reason'];
-                $extracted_text = $responseData['extracted_text'];
-                $job_text = $extracted_text; // For DB storage
+                $reason = $responseData['reason'] ?? "AI image analysis completed successfully.";
+                $extracted_text = $responseData['extracted_text'] ?? "";
             } else {
-                echo json_encode(["status" => "error", "message" => $responseData['message'] ?? "Image analysis failed"]);
+                $msg = $responseData['message'] ?? "The detection service returned an invalid response format.";
+                echo json_encode(["status" => "error", "message" => $msg]);
                 exit();
             }
         } else {
-            echo json_encode(["status" => "error", "message" => "Failed to upload image"]);
+            $error_info = error_get_last();
+            $msg = "Failed to upload image to server folder.";
+            if ($error_info) {
+                $msg .= " Details: " . $error_info['message'];
+            }
+            echo json_encode(["status" => "error", "message" => $msg]);
             exit();
         }
     } else {
@@ -100,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'ScamShield-Client/1.0'); // Help bypass some blocks
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -111,7 +123,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($httpCode !== 200 || !$response) {
-            echo json_encode(["status" => "error", "message" => "API Connection Failed: Server returned error code " . $httpCode]);
+            // Check if response contains "Unauthorized"
+            if (strpos($response, 'Unauthorized') !== false) {
+                echo json_encode(["status" => "error", "message" => "API Error: Access Denied by Remote Server (Unauthorized)"]);
+            } else {
+                echo json_encode(["status" => "error", "message" => "API Error (Code $httpCode): Unable to reach analysis engine."]);
+            }
             exit();
         }
 
@@ -121,7 +138,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $confidence = $responseData['confidence'];
             $reason = $responseData['reason'] ?? "AI analysis completed based on job structure and patterns.";
         } else {
-            echo json_encode(["status" => "error", "message" => "Detection service returned invalid data"]);
+            // Check if the response itself is "Unauthorized"
+            if (trim($response) == "Unauthorized") {
+                echo json_encode(["status" => "error", "message" => "The API server returned an Unauthorized response. Check Render logs."]);
+            } else {
+                echo json_encode(["status" => "error", "message" => "The detection service returned an invalid response format."]);
+            }
             exit();
         }
     }

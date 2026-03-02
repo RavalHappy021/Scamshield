@@ -25,6 +25,7 @@ if(isset($_POST['login'])){
             $_SESSION['user_id'] = $row['id'];      // important for history
             $_SESSION['user'] = $row['name'];       // for display
             $_SESSION['email'] = $row['email'];
+            $_SESSION['role'] = $row['role'];       // Store user role
 
             header("Location: dashboard.php");
             exit();

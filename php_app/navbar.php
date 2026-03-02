@@ -131,6 +131,12 @@ body {
           <a class="nav-link" href="contact.php">Contact Us</a>
         </li>
 
+        <?php if(isset($_SESSION['role']) && $_SESSION['role'] == 'admin'){ ?>
+        <li class="nav-item">
+          <a class="nav-link" href="admin_messages.php"><i class="fa-solid fa-inbox me-1"></i>Inbox</a>
+        </li>
+        <?php } ?>
+
         <?php if(isset($_SESSION['user'])){ ?>
           <li class="nav-item dropdown ms-lg-3">
             <button class="welcome-box dropdown-toggle border-0" id="userDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">

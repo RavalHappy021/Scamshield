@@ -330,7 +330,7 @@ $stats = getStats($conn);
         <div class="container text-center">
             <h2 class="fw-bold mb-4">Ready to scan your first job?</h2>
             <p class="lead text-white-50 mb-5">Join thousands of users who have secured their career path with our AI detection.</p>
-            <a href="register.php" class="btn-premium px-5">Get Started for Free</a>
+            <a href="check_job.php" class="btn-premium px-5">Start Scanning Now</a>
         </div>
     </section>
 
@@ -362,7 +362,7 @@ $stats = getStats($conn);
                 <div class="col-lg-3 col-md-4">
                     <h6 class="fw-bold text-uppercase mb-4">Support</h6>
                     <a href="#" class="footer-link">Help Center</a>
-                    <a href="#" class="footer-link">Contact Us</a>
+                    <a href="contact.php" class="footer-link">Contact Us</a>
                     <a href="#" class="footer-link">API Documentation</a>
                 </div>
             </div>

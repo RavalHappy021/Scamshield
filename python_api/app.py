@@ -8,9 +8,18 @@ import os
 app = Flask(__name__)
 
 # Optional: Set tesseract path if it's not in your PATH
-# Set tesseract path (default for Windows, or use TESSERACT_PATH env var)
-tesseract_path = os.getenv('TESSERACT_PATH', r'C:\Program Files\Tesseract-OCR\tesseract.exe')
-if tesseract_path:
+# Set tesseract path
+# 1. Use environment variable if set
+# 2. Use common Linux path (Render, Ubuntu, etc.)
+# 3. Fallback to common Windows path
+tesseract_path = os.getenv('TESSERACT_PATH')
+if not tesseract_path:
+    if os.name == 'posix':
+        tesseract_path = '/usr/bin/tesseract'
+    else:
+        tesseract_path = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+if os.path.exists(tesseract_path) or os.name == 'posix':
     pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 # Load trained model and vectorizer
