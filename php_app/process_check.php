@@ -33,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // ---------- API CALL ----------
-    $api_url = "http://127.0.0.1:5000/predict";
+    $api_url = "https://scamshield-luez.onrender.com/predict";
     $prediction = "";
     $confidence = 0;
     $reason = "";
     $extracted_text = "";
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $api_url = "http://127.0.0.1:5000/predict-image";
+        $api_url = "https://scamshield-luez.onrender.com/predict-image";
         $file_tmp = $_FILES['image']['tmp_name'];
         $file_name = $_FILES['image']['name'];
         $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unlink($upload_path); // Delete temp file
 
             if ($httpCode === 0) {
-                echo json_encode(["status" => "error", "message" => "API Connection Failed (Image): The detection service is not running. Please start the Python API."]);
+                echo json_encode(["status" => "error", "message" => "API Connection Failed (Image): The remote detection service is unreachable."]);
                 exit();
             }
 
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         curl_close($ch);
 
         if ($httpCode === 0) {
-            echo json_encode(["status" => "error", "message" => "API Connection Failed: The detection service is not running. Please start the Python API."]);
+            echo json_encode(["status" => "error", "message" => "API Connection Failed: The remote detection service is unreachable."]);
             exit();
         }
 
