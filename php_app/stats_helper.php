@@ -53,4 +53,30 @@ function getUserStats($conn, $user_id) {
     
     return $stats;
 }
+function getAdminStats($conn) {
+    $stats = [];
+    
+    // Global User Growth (last 30 days)
+    $res = $conn->query("SELECT DATE(created_at) as date, COUNT(*) as count FROM users GROUP BY DATE(created_at) ORDER BY date DESC LIMIT 30");
+    $stats['user_growth'] = $res;
+    
+    // Most Active Users (Top 5)
+    $res = $conn->query("SELECT u.name, COUNT(j.id) as check_count 
+                         FROM users u 
+                         JOIN job_history j ON u.id = j.user_id 
+                         GROUP BY u.id 
+                         ORDER BY check_count DESC 
+                         LIMIT 5");
+    $stats['top_users'] = $res;
+    
+    // Recent Global Activity (last 10)
+    $res = $conn->query("SELECT j.*, u.name as user_name 
+                         FROM job_history j 
+                         LEFT JOIN users u ON j.user_id = u.id 
+                         ORDER BY j.created_at DESC 
+                         LIMIT 10");
+    $stats['global_activity'] = $res;
+    
+    return $stats;
+}
 ?>

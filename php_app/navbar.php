@@ -133,6 +133,9 @@ body {
 
         <?php if(isset($_SESSION['role']) && $_SESSION['role'] == 'admin'){ ?>
         <li class="nav-item">
+          <a class="nav-link text-info fw-bold" href="admin_dashboard.php"><i class="fa-solid fa-crown me-1"></i>Admin</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="admin_messages.php"><i class="fa-solid fa-inbox me-1"></i>Inbox</a>
         </li>
         <?php } ?>
@@ -143,6 +146,9 @@ body {
               👋 Hi, <b><?php echo htmlspecialchars($_SESSION['user']); ?></b>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3">
+              <?php if(isset($_SESSION['role']) && $_SESSION['role'] == 'admin'){ ?>
+                <li><a class="dropdown-item py-2 text-info" href="admin_dashboard.php"><i class="fa-solid fa-crown me-2"></i>Admin Panel</a></li>
+              <?php } ?>
               <li><a class="dropdown-item py-2" href="dashboard.php"><i class="fa-solid fa-gauge-high me-2 text-info"></i>Dashboard</a></li>
               <li><a class="dropdown-item py-2" href="history.php"><i class="fa-solid fa-list-ul me-2 text-primary"></i>My History</a></li>
               <li><hr class="dropdown-divider opacity-50"></li>
