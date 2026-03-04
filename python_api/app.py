@@ -39,22 +39,20 @@ def clean_text(text):
 
 def get_reason(text, prediction):
     text = text.lower()
-    
     if prediction == "Fake":
-        if any(word in text for word in ["payment", "fee", "money", "bank", "account", "transfer"]):
-            return "Contains references to personal financial transactions or upfront payments."
-        if any(word in text for word in ["urgently", "limited", "immediate", "whatsapp", "telegram"]):
-            return "Uses high-pressure tactics or unprofessional communication channels."
-        if any(word in text for word in ["no experience", "easy", "high pay", "work from home"]):
-            return "Offers unusually high rewards for vague or minimal job requirements."
-        return "The job structure and language match known fraudulent recruitment patterns."
+        if any(word in text for word in ["payment", "fee", "money", "bank", "account", "transfer", "deposit", "registration"]):
+            return "Detected requests for personal financial details or upfront 'refundable' payments/fees."
+        if any(word in text for word in ["urgently", "urgent", "immediate", "whatsapp", "telegram", "guarantee", "guaranteed"]):
+            return "Uses high-pressure tactics (urgency/guarantee) or unprofessional communication channels."
+        if any(word in text for word in ["no experience", "easy", "high pay", "work from home", "no interview"]):
+            return "Offers unusually high rewards for vague requirements or lacks a professional interview process."
+        return "The job structure and language match known fraudulent recruitment patterns (e.g., suspicious contact methods)."
     else:
-        if any(word in text for word in ["interview", "assessment", "procedure", "application"]):
-            return "Follows a structured recruitment process including professional evaluations."
-        if any(word in text for word in ["responsibilities", "requirements", "skills", "experience"]):
-            return "Clearly defines technical skills and specific professional responsibilities."
+        if any(word in text for word in ["interview", "assessment", "procedure", "application", "rounds"]):
+            return "Follows a structured recruitment process with clear professional evaluation steps."
+        if any(word in text for word in ["responsibilities", "requirements", "skills", "experience", "qualifications"]):
+            return "Clearly defines technical skills, professional roles, and specific job responsibilities."
         return "Exhibits professional corporate communication and standard industry terminology."
-
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.json
