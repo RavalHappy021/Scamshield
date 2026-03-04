@@ -107,7 +107,7 @@ body {
           <a class="nav-link" href="index.php">Home</a>
         </li>
 
-        <?php if(isset($_SESSION['user'])){ ?>
+        <?php if(isset($_SESSION['user']) && $_SESSION['role'] !== 'admin'){ ?>
         <li class="nav-item">
           <a class="nav-link" href="dashboard.php">Dashboard</a>
         </li>
@@ -117,7 +117,7 @@ body {
           <a class="nav-link" href="check_job.php">Check Job</a>
         </li>
 
-        <?php if(isset($_SESSION['user'])){ ?>
+        <?php if(isset($_SESSION['user']) && $_SESSION['role'] !== 'admin'){ ?>
         <li class="nav-item">
           <a class="nav-link" href="history.php">History</a>
         </li>
@@ -148,9 +148,10 @@ body {
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3">
               <?php if(isset($_SESSION['role']) && $_SESSION['role'] == 'admin'){ ?>
                 <li><a class="dropdown-item py-2 text-info" href="admin_dashboard.php"><i class="fa-solid fa-crown me-2"></i>Admin Panel</a></li>
+              <?php } else { ?>
+                <li><a class="dropdown-item py-2" href="dashboard.php"><i class="fa-solid fa-gauge-high me-2 text-info"></i>Dashboard</a></li>
+                <li><a class="dropdown-item py-2" href="history.php"><i class="fa-solid fa-list-ul me-2 text-primary"></i>My History</a></li>
               <?php } ?>
-              <li><a class="dropdown-item py-2" href="dashboard.php"><i class="fa-solid fa-gauge-high me-2 text-info"></i>Dashboard</a></li>
-              <li><a class="dropdown-item py-2" href="history.php"><i class="fa-solid fa-list-ul me-2 text-primary"></i>My History</a></li>
               <li><hr class="dropdown-divider opacity-50"></li>
               <li><a class="dropdown-item text-danger py-2" href="logout.php"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
             </ul>

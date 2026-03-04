@@ -8,6 +8,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Automatically redirect admins to the Admin Dashboard
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    header("Location: admin_dashboard.php");
+    exit();
+}
+
 $user_id = $_SESSION['user_id'];
 $user_stats = getUserStats($conn, $user_id);
 $global_stats = getStats($conn);

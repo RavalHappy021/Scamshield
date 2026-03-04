@@ -27,7 +27,12 @@ if(isset($_POST['login'])){
             $_SESSION['email'] = $row['email'];
             $_SESSION['role'] = $row['role'];       // Store user role
 
-            header("Location: dashboard.php");
+            // ✅ Redirect based on role
+            if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+                header("Location: admin_dashboard.php");
+            } else {
+                header("Location: dashboard.php");
+            }
             exit();
 
         } else {

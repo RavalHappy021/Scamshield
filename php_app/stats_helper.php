@@ -61,21 +61,29 @@ function getAdminStats($conn) {
     $stats['user_growth'] = $res;
     
     // Most Active Users (Top 5)
-    $res = $conn->query("SELECT u.name, COUNT(j.id) as check_count 
+    $res = $conn->query("SELECT u.name, u.email, COUNT(j.id) as check_count 
                          FROM users u 
-                         JOIN job_history j ON u.id = j.user_id 
+                         LEFT JOIN job_history j ON u.id = j.user_id 
                          GROUP BY u.id 
                          ORDER BY check_count DESC 
-                         LIMIT 5");
+                         LIMIT 8");
     $stats['top_users'] = $res;
     
-    // Recent Global Activity (last 10)
-    $res = $conn->query("SELECT j.*, u.name as user_name 
+    // Detailed Audit Logs (Last 20)
+    $res = $conn->query("SELECT j.*, u.name as user_name, u.email as user_email 
                          FROM job_history j 
                          LEFT JOIN users u ON j.user_id = u.id 
                          ORDER BY j.created_at DESC 
-                         LIMIT 10");
-    $stats['global_activity'] = $res;
+                         LIMIT 20");
+    $stats['audit_logs'] = $res;
+    
+    // Platform distribution (Real vs Fake)
+    $res = $conn->query("SELECT result, COUNT(*) as count FROM job_history GROUP BY result");
+    $dist = ['Real' => 0, 'Fake' => 0];
+    while($row = $res->fetch_assoc()){
+        $dist[$row['result']] = $row['count'];
+    }
+    $stats['distribution'] = $dist;
     
     return $stats;
 }
