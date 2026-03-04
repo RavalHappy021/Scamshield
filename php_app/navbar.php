@@ -162,4 +162,14 @@ body {
     </div>
   </div>
 </nav>
+<!-- Background Warming Script for Render Free Tier -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const apiBase = "https://scamshield-cplu.onrender.com";
+    // Send a "ping" to wake up the Render server in the background
+    fetch(apiBase, { mode: 'no-cors' })
+    .then(() => console.log('ScamShield API Waking Up...'))
+    .catch(() => {});
+});
+</script>
 

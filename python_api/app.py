@@ -83,14 +83,27 @@ def predict_image():
         return jsonify({"status": "error", "message": "No image selected"}), 400
 
     try:
-        # Load image and perform OCR
+        # Load image
         img = Image.open(file)
+        
+        # Optimize image: Convert to RGB and resize if too large
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        
+        max_size = 1800
+        if max(img.size) > max_size:
+            ratio = max_size / max(img.size)
+            new_size = (int(img.size[0] * ratio), int(img.size[1] * ratio))
+            img = img.resize(new_size, Image.Resampling.LANCZOS)
+            print(f"Resized image to {new_size}")
+
+        # Perform OCR
         extracted_text = pytesseract.image_to_string(img)
         
         if not extracted_text.strip():
             return jsonify({
                 "status": "error", 
-                "message": "Could not extract any text from the image. Please ensure it's a clear job poster."
+                "message": "The AI could not read any text from the image. Please upload a clearer screenshot/poster."
             }), 200
 
         # Existing prediction logic
@@ -108,6 +121,7 @@ def predict_image():
             "confidence": round(confidence, 2),
             "reason": reason
         })
+
 
     except pytesseract.TesseractNotFoundError:
         print("Error: Tesseract OCR not found.")

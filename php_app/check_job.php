@@ -210,7 +210,7 @@ function triggerCheck() {
     // Reset UI
     resultDiv.style.display = 'block';
     alertDiv.className = 'alert alert-info shadow-sm border-0';
-    resultValue.innerText = 'Analyzing...';
+    resultValue.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Analyzing... <small class="d-block opacity-50 mt-1">This may take a moment if the server is starting up.</small>';
     reasonArea.style.display = 'none';
     extractedArea.style.display = 'none';
 

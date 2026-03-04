@@ -80,15 +80,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($httpCode !== 200 || !$response) {
                 $responseData = json_decode($response, true);
-                $msg = $responseData['message'] ?? "API Error (Code $httpCode)";
-                if (isset($responseData['details'])) {
-                    // Log details for admin but show short message to user
-                    error_log("API Debug Details: " . $responseData['details']);
-                    $msg .= " - " . substr($responseData['details'], 0, 100) . "...";
+                
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    // Response is not JSON, probably an HTML error from Render or Gunicorn
+                    $msg = "API Error (Code $httpCode): The analysis engine is currently overloaded or timed out.";
+                    if (strpos($response, '504') !== false || strpos($response, 'Gateway Timeout') !== false) {
+                        $msg = "API Timeout: The image analysis took too long. Please try a smaller file.";
+                    }
+                } else {
+                    $msg = $responseData['message'] ?? "API Error (Code $httpCode)";
+                    if (isset($responseData['details'])) {
+                        error_log("API Debug Details: " . $responseData['details']);
+                        $msg .= " - " . substr($responseData['details'], 0, 100) . "...";
+                    }
                 }
+
                 echo json_encode(["status" => "error", "message" => $msg]);
                 exit();
             }
+
 
             $responseData = json_decode($response, true);
             if (is_array($responseData) && $responseData['status'] === 'success') {
