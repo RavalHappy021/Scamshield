@@ -69,9 +69,11 @@ TRAINING_DATA = [
 
 @app.route("/", methods=["GET"])
 def home():
+    import sklearn
     return jsonify({
         "status": "online",
         "message": "ScamShield AI API is running",
+        "sklearn_version": sklearn.__version__,
         "endpoints": ["/predict", "/predict-image"]
     })
 
