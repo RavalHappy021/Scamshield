@@ -33,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // ---------- API CALL ----------
-    $api_url = "https://scamshield-luez.onrender.com/predict";
+    $api_url = $api_base_url . "/predict";
     $prediction = "";
     $confidence = 0;
     $reason = "";
     $extracted_text = "";
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $api_url = "https://scamshield-luez.onrender.com/predict-image";
+        $api_url = $api_base_url . "/predict-image";
         $file_tmp = $_FILES['image']['tmp_name'];
         $file_name = $_FILES['image']['name'];
         $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $responseData = json_decode($response, true);
-        if (is_array($responseData) && isset($responseData['result'])) {
+        if (is_array($responseData) && (($responseData['status'] ?? '') === 'success' || isset($responseData['result']))) {
             $prediction = $responseData['result'];
             $confidence = $responseData['confidence'];
             $reason = $responseData['reason'] ?? "AI analysis completed based on job structure and patterns.";

@@ -99,21 +99,29 @@ def get_reason(text, prediction):
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.json
-    job_text = data["text"]
+    try:
+        data = request.json
+        job_text = data.get("text", "")
+        
+        if not job_text:
+            return jsonify({"status": "error", "message": "No text provided"}), 400
 
-    clean = clean_text(job_text)
-    vec = vectorizer.transform([clean])
+        clean = clean_text(job_text)
+        vec = vectorizer.transform([clean])
 
-    prediction = model.predict(vec)[0]
-    confidence = model.predict_proba(vec).max() * 100
-    reason = get_reason(job_text, prediction)
+        prediction = model.predict(vec)[0]
+        confidence = model.predict_proba(vec).max() * 100
+        reason = get_reason(job_text, prediction)
 
-    return jsonify({
-        "result": prediction,
-        "confidence": round(confidence, 2),
-        "reason": reason
-    })
+        return jsonify({
+            "status": "success",
+            "result": prediction,
+            "confidence": round(confidence, 2),
+            "reason": reason
+        })
+    except Exception as e:
+        print(f"Prediction Error: {str(e)}")
+        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 500
 
 @app.route("/predict-image", methods=["POST"])
 def predict_image():
