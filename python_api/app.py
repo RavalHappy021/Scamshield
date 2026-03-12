@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import pickle
+import joblib
 import re
 import pytesseract
 from PIL import Image
@@ -23,8 +23,8 @@ if os.path.exists(tesseract_path) or os.name == 'posix':
     pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 # Load trained model and vectorizer
-model = pickle.load(open("model.pkl", "rb"))
-vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
+model = joblib.load("model.pkl")
+vectorizer = joblib.load("vectorizer.pkl")
 
 # --- 100+ TRAINING DATA SAMPLES (Reference) ---
 TRAINING_DATA = [

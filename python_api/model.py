@@ -1,5 +1,5 @@
 import pandas as pd
-import pickle
+import joblib
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -64,7 +64,7 @@ X_vec = vectorizer.fit_transform(X)
 model = LogisticRegression()
 model.fit(X_vec, y)
 
-pickle.dump(model, open("model.pkl","wb"))
-pickle.dump(vectorizer, open("vectorizer.pkl","wb"))
+joblib.dump(model, "model.pkl")
+joblib.dump(vectorizer, "vectorizer.pkl")
 
 print("Model trained successfully")
