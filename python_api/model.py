@@ -90,7 +90,59 @@ fake_jobs = [
     "electrician role pay for licensing", "plumber role pay for tools",
     "carpenter role pay for equipment", "painter role pay for tools",
     "landscaper role pay for uniform", "gardener role pay for tools",
-    "cleaner role pay for equipment", "janitor role pay for uniform"
+    "cleaner role pay for equipment", "janitor role pay for uniform",
+    # 100 More New Fakes (2025 Patterns)
+    "work from home task based job earn 5000 daily with crypto payout", "like youtube videos and get paid instantly pay verification fee",
+    "urgent hiring for international shipping assistant pay customs clearance", "receive packages and reship them high commission no experience",
+    "part time virtual assistant needed pay for software installation kit", "be a social media booster earn rewards pay for account activation",
+    "official amazon vendor needs review boosters pay for first order", "data entry role 1000 per hour no skills required pay for security",
+    "whatsapp recruiter offering 500 dollars per day for simple app testing", "telegram job group join for daily payouts pay member fee",
+    "personal shopper for high end brands pay insurance for items", "work from home packing job materials sent after registration fee",
+    "earn passive income by renting your facebook account for ads", "be a secret gift card tester pay for initial purchase",
+    "guaranteed visa and job in canada pay upfront legal fee", "oil and gas job in dubai pay for medical and flight",
+    "hospitality job in london pay for work permit processing", "fast track your job application pay for priority queue",
+    "direct selection by CEO pay for background verification", "remote typing job 50 per page pay for proprietary software",
+    "earn money by rating hotels and restaurants on maps pay for portal", "online tutor job pay for digital library access",
+    "survey taker role earn 100 dollars per survey pay for account", "recruitment firm offering 100% placement pay security deposit",
+    "work from home order processor pay for inventory software", "be a brand tester keep products pay for courier insurance",
+    "high salary simple tasks no interview needed pay registration", "whatsapp us for lucrative work from home opportunity",
+    "earn big with our affiliate job system pay entry fee", "become a mystery buyer pay for first transaction",
+    "remote customer executive pay for mandatory training module", "bank officer vacancy direct recruitment pay for orientation",
+    "it support role from home pay for equipment delivery", "marketing assistant needed pay for promotional kit",
+    "earn daily by clicking ads pay for premium membership", "global survey expert role pay for member card",
+    "work in australia farm work pay for document vetting", "singapore airport job pay for security clearance",
+    "european work permit job pay for processing fees", "overseas nursing role pay for license verification",
+    "teaching job in middle east pay for visa sponsorship", "cruise ship staff pay for maritime certificate",
+    "airline ground staff role pay for uniform and training", "security officer role pay for license and badge",
+    "delivery fleet partner pay for GPS tracking device", "logistics coordinator pay for software license",
+    "warehouse supervisor role pay for safety equipment", "production trainee pay for training materials",
+    "call center job from home pay for noise cancelling headset", "virtual receptionist pay for software portal",
+    "social media moderator pay for training database", "content writer job pay for plagiarism software",
+    "copy editor role pay for style guide access", "graphic designer role pay for stock image library",
+    "video editor job pay for asset pack access", "software tester job pay for beta access",
+    "web dev intern pay for mentorship program", "digital marketing role pay for ad spend",
+    "seo assistant needed pay for keyword research tool", "translation job pay for professional dictionary",
+    "voice artist role pay for studio session fee", "model search pay for portfolio photography",
+    "extra for movie షూటింగ్ pay for registration fee", "mystery gift reviewer pay for shipping",
+    "jewelry tester role pay for transit insurance", "cosmetics reviewer pay for delivery charges",
+    "gadget reviewer keep the phone pay for security", "book summary writer pay for reading list",
+    "podcaster assistant pay for editing software", "email marketer role pay for lead database",
+    "customer success role pay for dedicated phone line", "technical writer pay for documentation portal",
+    "qa engineer role pay for automated testing suite", "hr trainee pay for recruitment portal access",
+    "data entry specialist pay for microsoft office suite", "receptionist role pay for corporate uniform",
+    "sales representative pay for leads and data", "marketing coordinator pay for branding assets",
+    "business development associate pay for networking pass", "consultancy role pay for certification fee",
+    "life coach assistant pay for training manual", "online tutor role pay for teaching platform",
+    "translator role pay for translation software", "content specialist pay for editing tools",
+    "proofreader role pay for grammar checker subscription", "blog writer pay for hosting and domain",
+    "vlog assistant pay for creative cloud access", "social media influencer pay for verification badge",
+    "brand promoter pay for marketing kit", "event staff pay for onsite training",
+    "retail associate pay for employee ID and badge", "waitstaff role pay for training and uniform",
+    "hostess role pay for registration and orientation", "hotel front desk pay for training system",
+    "travel agent role pay for global distribution system access", "flight attendant trainee pay for safety school",
+    "ground crew assistant pay for airfield badge", "security guard pay for uniform and licensing",
+    "it technician pay for diagnostic toolkit", "network engineer pay for certification voucher"
+
 ]
 
 real_jobs = [
@@ -174,8 +226,63 @@ real_jobs = [
     "career counselor for vocational school", "grant writer for non-profit organization",
     "fundraising coordinator for charity", "volunteer manager for community service",
     "executive director for foundation", "program manager for international aid",
-    "policy analyst for think tank", "government relations officer for corporation"
+    "policy analyst for think tank", "government relations officer for corporation",
+    # 100 More New Reals (Professional Roles)
+    "lead developer for fintech scaleup in singapore", "senior product designer for e-commerce platform",
+    "data engineer with snowflake and spark experience", "cloud security architect for global bank",
+    "marketing analytics manager for retail giant", "hr director for multinational manufacturing firm",
+    "strategy consultant for top tier management firm", "operations director for regional logistics hub",
+    "chief technology officer for healthtech startup", "vp of sales for enterprise software company",
+    "senior legal counsel for intellectual property", "finance manager for renewable energy projects",
+    "sustainability officer for corporate responsibility", "public affairs manager for non profit",
+    "digital transformation lead for legacy business", "customer experience head for telco provider",
+    "supply chain director for automotive manufacturer", "research and development head for pharma",
+    "chief of staff for growing tech company", "investor relations manager for public firm",
+    "brand director for luxury fashion house", "creative lead for advertising agency",
+    "technical program manager for cloud infrastructure", "solutions engineer for saas provider",
+    "account director for key client management", "business systems analyst for erp migration",
+    "quality assurance director for medical devices", "regulatory affairs specialist for biotech",
+    "clinical trials coordinator for research hospital", "environmental health and safety manager",
+    "facilities director for large campus", "real estate development manager for commercial projects",
+    "investment strategist for wealth management", "portfolio manager for pension fund",
+    "risk management lead for insurance group", "internal communications manager for employees",
+    "learning and development specialist for staff", "talent acquisition lead for high volume hiring",
+    "compensation and benefits manager for global team", "employee relations specialist for labor law",
+    "payroll manager for large scale organization", "procurement manager for strategic sourcing",
+    "warehouse operations manager for fulfillment", "logistics analyst for route optimization",
+    "manufacturing engineer for robotics line", "process improvement specialist for lean six sigma",
+    "mechanical engineer for renewable energy systems", "electrical engineer for grid modernization",
+    "civil engineer for sustainable infrastructure", "structural engineer for high rise buildings",
+    "architect for green building design", "urban designer for smart city initiatives",
+    "landscape architect for public parks", "interior architect for workspace design",
+    "software architect for microservices transition", "devops lead for cicd pipeline automation",
+    "site reliability engineer for high availability", "database architect for big data solutions",
+    "machine learning engineer for computer vision", "natural language processing specialist",
+    "data scientist for predictive modeling", "biostatistician for pharmaceutical research",
+    "quantitative researcher for financial modeling", "actuarial manager for life insurance",
+    "tax director for international compliance", "audit manager for financial reporting",
+    "treasury manager for cash flow optimization", "economic researcher for central bank",
+    "social researcher for public policy", "market researcher for consumer behavior",
+    "digital strategist for multi channel marketing", "content director for media house",
+    "editor in chief for professional journal", "senior journalist for investigative reporting",
+    "communications director for government agency", "publicist for high profile clients",
+    "event director for international conferences", "exhibition manager for art museum",
+    "curator for contemporary art collection", "archivist for national library",
+    "dean of students for major university", "registrar for academic records",
+    "admissions director for graduate school", "career services head for business school",
+    "education consultant for curriculum development", "school principal for secondary education",
+    "special education coordinator for district", "speech and language pathologist",
+    "clinical psychologist for hospital unit", "occupational health specialist for workplace",
+    "physiotherapist for sports rehabilitation", "senior nurse manager for intensive care",
+    "medical director for community clinic", "pharmacist in charge for retail pharmacy",
+    "dentist for family practice", "veterinary surgeon for small animals",
+    "agronomist for sustainable farming", "food scientist for quality assurance",
+    "chemist for industrial coatings", "physicist for material science research"
+
 ]
+
+from sklearn.pipeline import Pipeline
+from sklearn.naive_bayes import MultinomialNB
 
 data = {
     "text": fake_jobs + real_jobs,
@@ -185,16 +292,30 @@ data = {
 df = pd.DataFrame(data)
 df["text"] = df["text"].apply(clean_text)
 
+# Add some fake indicator weights by duplicating obvious fake samples
+fake_indicators = [
+    "pay registration fee", "buy training kit", "whatsapp us for job", 
+    "telegram job offer", "crypto payout", "earn 5000 daily",
+    "no interview needed", "send bank details", "processing fee required"
+]
+for indicator in fake_indicators:
+    for _ in range(5):
+        df = pd.concat([df, pd.DataFrame({"text": [clean_text(indicator)], "label": ["Fake"]})], ignore_index=True)
+
 X = df["text"]
 y = df["label"]
 
-vectorizer = TfidfVectorizer(stop_words='english')
-X_vec = vectorizer.fit_transform(X)
+# Using Pipeline for better management
+pipeline = Pipeline([
+    ('vectorizer', TfidfVectorizer(stop_words='english', ngram_range=(1, 2))),
+    ('model', LogisticRegression(class_weight='balanced', C=10.0)) # Increased C for better fitting
+])
 
-model = LogisticRegression()
-model.fit(X_vec, y)
+pipeline.fit(X, y)
 
-joblib.dump(model, "model.pkl")
-joblib.dump(vectorizer, "vectorizer.pkl")
+# Save the entire pipeline or components
+# For compatibility with app.py we save them separately as before
+joblib.dump(pipeline.named_steps['model'], "model.pkl")
+joblib.dump(pipeline.named_steps['vectorizer'], "vectorizer.pkl")
 
 print("Model trained successfully")

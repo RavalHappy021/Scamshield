@@ -1,40 +1,26 @@
 from flask import Flask, request, jsonify
 import joblib
 import re
-import pytesseract
-from PIL import Image
 import os
+from PIL import Image
+import pytesseract
 
 app = Flask(__name__)
 
-# Optional: Set tesseract path if it's not in your PATH
-# Set tesseract path
-# 1. Use environment variable if set
-# 2. Use common Linux path (Render, Ubuntu, etc.)
-# 3. Fallback to common Windows path
-tesseract_path = os.getenv('TESSERACT_PATH')
-if not tesseract_path:
-    if os.name == 'posix':
-        tesseract_path = '/usr/bin/tesseract'
-    else:
-        tesseract_path = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
-if os.path.exists(tesseract_path) or os.name == 'posix':
-    pytesseract.pytesseract.tesseract_cmd = tesseract_path
+# Base path for models (Vercel serverless environment)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "model.pkl")
+vectorizer_path = os.path.join(BASE_DIR, "vectorizer.pkl")
 
 # Load trained model and vectorizer
-model = joblib.load("model.pkl")
-vectorizer = joblib.load("vectorizer.pkl")
-
-@app.route("/", methods=["GET"])
-def home():
-    import sklearn
-    return jsonify({
-        "status": "online",
-        "message": "ScamShield AI API is running",
-        "sklearn_version": sklearn.__version__,
-        "endpoints": ["/predict", "/predict-image"]
-    })
+try:
+    model = joblib.load(model_path)
+    vectorizer = joblib.load(vectorizer_path)
+except Exception as e:
+    print(f"Error loading models: {str(e)}")
+    # Fallback/Error handle for Vercel
+    model = None
+    vectorizer = None
 
 def clean_text(text):
     text = re.sub(r'\W', ' ', text)
@@ -42,7 +28,6 @@ def clean_text(text):
 
 def get_reason(text, prediction):
     text = text.lower()
-    
     if prediction == "Fake":
         if any(word in text for word in ["payment", "fee", "money", "bank", "account", "transfer"]):
             return "Contains references to personal financial transactions or upfront payments."
@@ -58,8 +43,11 @@ def get_reason(text, prediction):
             return "Clearly defines technical skills and specific professional responsibilities."
         return "Exhibits professional corporate communication and standard industry terminology."
 
-@app.route("/predict", methods=["POST"])
+@app.route("/api/predict", methods=["POST"])
 def predict():
+    if not model or not vectorizer:
+        return jsonify({"status": "error", "message": "Model not loaded on server"}), 500
+    
     try:
         data = request.json
         job_text = data.get("text", "")
@@ -81,33 +69,30 @@ def predict():
             "reason": reason
         })
     except Exception as e:
-        print(f"Prediction Error: {str(e)}")
-        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-@app.route("/predict-image", methods=["POST"])
+@app.route("/api/predict-image", methods=["POST"])
 def predict_image():
     if 'image' not in request.files:
         return jsonify({"status": "error", "message": "No image uploaded"}), 400
     
     file = request.files['image']
-    if file.filename == '':
-        return jsonify({"status": "error", "message": "No image selected"}), 400
-
     try:
-        # Load image and perform OCR
         img = Image.open(file)
-        extracted_text = pytesseract.image_to_string(img)
-        
-        if not extracted_text.strip():
+        # Check if tesseract is available
+        try:
+            extracted_text = pytesseract.image_to_string(img)
+        except Exception:
             return jsonify({
                 "status": "error", 
-                "message": "Could not extract any text from the image. Please ensure it's a clear job poster."
+                "message": "OCR service (Tesseract) is not available in this environment. Please use text analysis."
             }), 200
 
-        # Existing prediction logic
+        if not extracted_text.strip():
+            return jsonify({"status": "error", "message": "Could not extract text from image"}), 200
+
         clean = clean_text(extracted_text)
         vec = vectorizer.transform([clean])
-
         prediction = model.predict(vec)[0]
         confidence = model.predict_proba(vec).max() * 100
         reason = get_reason(extracted_text, prediction)
@@ -119,16 +104,12 @@ def predict_image():
             "confidence": round(confidence, 2),
             "reason": reason
         })
-
-    except pytesseract.TesseractNotFoundError:
-        print("Error: Tesseract OCR not found.")
-        return jsonify({
-            "status": "error", 
-            "message": f"Tesseract OCR not found. Please ensure Tesseract is installed and the path '{tesseract_path}' is correct."
-        }), 200
     except Exception as e:
-        print(f"Prediction Error: {str(e)}")
-        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-if __name__ == "__main__":
-    app.run(debug=True)
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def catch_all(path):
+    return jsonify({"status": "online", "message": "ScamShield API is running"}), 200
+
+# For Vercel, we don't need app.run()
