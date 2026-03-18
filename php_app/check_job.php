@@ -101,10 +101,14 @@ $resultClass = "";
         <form id="jobForm">
             <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active rounded-pill px-4" id="pills-text-tab" data-bs-toggle="pill" data-bs-target="#pills-text" type="button" role="tab">📝 Text Analysis</button>
+                    <button class="nav-link active rounded-pill px-4" id="pills-text-tab" data-bs-toggle="pill" data-bs-target="#pills-text" type="button" role="tab">
+                        📝 Text Analysis <span class="badge bg-success ms-1" style="font-size: 0.6rem;">Stable</span>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link rounded-pill px-4" id="pills-image-tab" data-bs-toggle="pill" data-bs-target="#pills-image" type="button" role="tab">🖼 Image Analysis</button>
+                    <button class="nav-link rounded-pill px-4" id="pills-image-tab" data-bs-toggle="pill" data-bs-target="#pills-image" type="button" role="tab">
+                        🖼 Image Analysis <span class="badge bg-warning text-dark ms-1" style="font-size: 0.6rem;">Beta</span>
+                    </button>
                 </li>
             </ul>
 

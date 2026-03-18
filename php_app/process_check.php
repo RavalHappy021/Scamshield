@@ -35,9 +35,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ---------- API CALL ----------
     $api_url = $api_base_url . "/predict";
     $prediction = "";
-    $confidence = 0;
-    $reason = "";
     $extracted_text = "";
+
+    // ---------- IMAGE COMPRESSION FUNCTION ----------
+    function compressImage($source, $destination, $quality, $max_width = 800) {
+        $info = getimagesize($source);
+        if ($info['mime'] == 'image/jpeg') $image = imagecreatefromjpeg($source);
+        elseif ($info['mime'] == 'image/gif') $image = imagecreatefromgif($source);
+        elseif ($info['mime'] == 'image/png') $image = imagecreatefrompng($source);
+        else return false;
+
+        // Resize if too large
+        $width = imagesx($image);
+        $height = imagesy($image);
+        if ($width > $max_width) {
+            $new_width = $max_width;
+            $new_height = floor($height * ($max_width / $width));
+            $tmp_img = imagecreatetruecolor($new_width, $new_height);
+            imagecopyresampled($tmp_img, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+            imagedestroy($image);
+            $image = $tmp_img;
+        }
+
+        imagejpeg($image, $destination, $quality);
+        imagedestroy($image);
+        return $destination;
+    }
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $api_url = $api_base_url . "/predict-image";
@@ -58,6 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $upload_path = $upload_dir . time() . "_" . $file_name;
         if (move_uploaded_file($file_tmp, $upload_path)) {
+            // COMPRESS IMAGE before sending to API (Crucial for Render Free Tier Stability)
+            $compressed_path = $upload_dir . "comp_" . time() . ".jpg";
+            if (compressImage($upload_path, $compressed_path, 75)) {
+                $upload_path = $compressed_path; // Use the lighter version
+            }
+
             // Send image to Python API
             $data = [
                 'image' => new CURLFile($upload_path)
