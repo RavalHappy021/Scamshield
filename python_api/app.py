@@ -27,25 +27,29 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, "model.pkl")
 vectorizer_path = os.path.join(BASE_DIR, "vectorizer.pkl")
 
-# Load trained model and vectorizer with error handling
-try:
-    model = joblib.load(model_path)
-    vectorizer = joblib.load(vectorizer_path)
-except Exception as e:
-    print(f"CRITICAL: Failed to load models: {str(e)}")
-    model = None
-    vectorizer = None
+# Global variables for models (loaded lazily)
+model = None
+vectorizer = None
+
+def get_model():
+    global model, vectorizer
+    if model is None:
+        try:
+            print("Loading models lazily...")
+            model = joblib.load(model_path)
+            vectorizer = joblib.load(vectorizer_path)
+        except Exception as e:
+            print(f"CRITICAL: Failed to load models: {str(e)}")
+    return model, vectorizer
 
 @app.route("/", methods=["GET"])
 def home():
-    import sklearn
+    m, v = get_model()
     return jsonify({
         "status": "online",
         "message": "ScamShield AI API is running",
-        "sklearn_version": sklearn.__version__,
-        "model_loaded": model is not None,
-        "vectorizer_loaded": vectorizer is not None,
-        "debug_timestamp": "2026-03-18 20:50",
+        "model_loaded": m is not None,
+        "debug_timestamp": "2026-03-18 23:48",
         "endpoints": ["/predict", "/predict-image"]
     })
 
@@ -55,7 +59,6 @@ def clean_text(text):
 
 def get_reason(text, prediction):
     text = text.lower()
-    
     if prediction == "Fake":
         if any(word in text for word in ["payment", "fee", "money", "bank", "account", "transfer"]):
             return "Contains references to personal financial transactions or upfront payments."
@@ -73,79 +76,65 @@ def get_reason(text, prediction):
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    if not model or not vectorizer:
-        return jsonify({"status": "error", "message": "ML Model not loaded on server. Please check logs."}), 200
+    m, v = get_model()
+    if not m or not v:
+        return jsonify({"status": "error", "message": "ML Model not available. Try again in 30 seconds."}), 200
     try:
-        data = request.json
+        data = request.get_json(silent=True) or {}
         job_text = data.get("text", "")
-        
         if not job_text:
-            return jsonify({"status": "error", "message": "No text provided"}), 400
+            return jsonify({"status": "error", "message": "No text provided"}), 200
 
         clean = clean_text(job_text)
-        vec = vectorizer.transform([clean])
-
-        prediction = model.predict(vec)[0]
-        confidence = model.predict_proba(vec).max() * 100
-        reason = get_reason(job_text, prediction)
-
+        vec = v.transform([clean])
+        prediction = m.predict(vec)[0]
+        confidence = m.predict_proba(vec).max() * 100
         return jsonify({
             "status": "success",
             "result": prediction,
             "confidence": round(confidence, 2),
-            "reason": reason
+            "reason": get_reason(job_text, prediction)
         })
     except Exception as e:
-        print(f"Prediction Error: {str(e)}")
         return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 200
 
 @app.route("/predict-image", methods=["POST"])
 def predict_image():
-    if not model or not vectorizer:
-        return jsonify({"status": "error", "message": "ML Model not loaded on server. Please check logs."}), 500
+    m, v = get_model()
+    if not m or not v:
+        return jsonify({"status": "error", "message": "ML Model not available. Try again in 30 seconds."}), 200
     if 'image' not in request.files:
-        return jsonify({"status": "error", "message": "No image uploaded"}), 400
+        return jsonify({"status": "error", "message": "No image uploaded"}), 200
     
     file = request.files['image']
     if file.filename == '':
-        return jsonify({"status": "error", "message": "No image selected"}), 400
+        return jsonify({"status": "error", "message": "No image selected"}), 200
 
     try:
-        # Load image and perform OCR
+        # Check image size to prevent memory crash (Max 5MB)
+        file.seek(0, os.SEEK_END)
+        size = file.tell()
+        file.seek(0)
+        if size > 5 * 1024 * 1024:
+            return jsonify({"status": "error", "message": "Image too large (Max 5MB). Please use Text Analysis."}), 200
+
         img = Image.open(file)
         extracted_text = pytesseract.image_to_string(img)
-        
         if not extracted_text.strip():
-            return jsonify({
-                "status": "error", 
-                "message": "Could not extract any text from the image. Please ensure it's a clear job poster."
-            }), 200
+            return jsonify({"status": "error", "message": "No text found in image. Please use Text Analysis."}), 200
 
-        # Existing prediction logic
         clean = clean_text(extracted_text)
-        vec = vectorizer.transform([clean])
-
-        prediction = model.predict(vec)[0]
-        confidence = model.predict_proba(vec).max() * 100
-        reason = get_reason(extracted_text, prediction)
-
+        vec = v.transform([clean])
+        prediction = m.predict(vec)[0]
+        confidence = m.predict_proba(vec).max() * 100
         return jsonify({
             "status": "success",
-            "extracted_text": extracted_text.strip(),
             "result": prediction,
             "confidence": round(confidence, 2),
-            "reason": reason
+            "reason": get_reason(extracted_text, prediction)
         })
-
-    except pytesseract.TesseractNotFoundError:
-        print("Error: Tesseract OCR not found.")
-        return jsonify({
-            "status": "error", 
-            "message": f"Tesseract OCR not found. Please ensure Tesseract is installed and the path '{tesseract_path}' is correct."
-        }), 200
     except Exception as e:
-        print(f"Prediction Error: {str(e)}")
-        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 200
+        return jsonify({"status": "error", "message": f"OCR Error: {str(e)}"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
