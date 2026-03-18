@@ -74,7 +74,7 @@ def get_reason(text, prediction):
 @app.route("/predict", methods=["POST"])
 def predict():
     if not model or not vectorizer:
-        return jsonify({"status": "error", "message": "ML Model not loaded on server. Please check logs."}), 500
+        return jsonify({"status": "error", "message": "ML Model not loaded on server. Please check logs."}), 200
     try:
         data = request.json
         job_text = data.get("text", "")
