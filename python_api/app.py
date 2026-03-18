@@ -22,9 +22,19 @@ if not tesseract_path:
 if os.path.exists(tesseract_path) or os.name == 'posix':
     pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
-# Load trained model and vectorizer
-model = joblib.load("model.pkl")
-vectorizer = joblib.load("vectorizer.pkl")
+# Base path for models
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "model.pkl")
+vectorizer_path = os.path.join(BASE_DIR, "vectorizer.pkl")
+
+# Load trained model and vectorizer with error handling
+try:
+    model = joblib.load(model_path)
+    vectorizer = joblib.load(vectorizer_path)
+except Exception as e:
+    print(f"CRITICAL: Failed to load models: {str(e)}")
+    model = None
+    vectorizer = None
 
 @app.route("/", methods=["GET"])
 def home():
@@ -60,6 +70,8 @@ def get_reason(text, prediction):
 
 @app.route("/predict", methods=["POST"])
 def predict():
+    if not model or not vectorizer:
+        return jsonify({"status": "error", "message": "ML Model not loaded on server. Please check logs."}), 500
     try:
         data = request.json
         job_text = data.get("text", "")
@@ -86,6 +98,8 @@ def predict():
 
 @app.route("/predict-image", methods=["POST"])
 def predict_image():
+    if not model or not vectorizer:
+        return jsonify({"status": "error", "message": "ML Model not loaded on server. Please check logs."}), 500
     if 'image' not in request.files:
         return jsonify({"status": "error", "message": "No image uploaded"}), 400
     
