@@ -131,7 +131,8 @@ def predict_image():
             "status": "success",
             "result": prediction,
             "confidence": round(confidence, 2),
-            "reason": get_reason(extracted_text, prediction)
+            "reason": get_reason(extracted_text, prediction),
+            "extracted_text": extracted_text.strip()
         })
     except Exception as e:
         return jsonify({"status": "error", "message": f"OCR Error: {str(e)}"}), 200
