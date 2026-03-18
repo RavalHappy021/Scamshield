@@ -1,19 +1,18 @@
 {
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
+  "functions": {
+    "api/*.py": {
+      "runtime": "@vercel/python"
     },
-    {
-      "src": "php_app/**/*.php",
-      "use": "vercel-php"
+    "php_app/**/*.php": {
+      "runtime": "vercel-php"
     }
-  ],
+  },
   "routes": [
-    { "src": "/api/(.*)", "dest": "api/index.py" },
-    { "src": "/(.*).php", "dest": "php_app/$1.php" },
-    { "src": "/assets/(.*)", "dest": "php_app/assets/$1" },
-    { "src": "/uploads/(.*)", "dest": "php_app/uploads/$1" },
-    { "src": "/(.*)", "dest": "php_app/$1" }
+    { "src": "/api/(.*)", "dest": "/api/index.py" },
+    { "src": "/assets/(.*)", "dest": "/php_app/assets/$1" },
+    { "src": "/uploads/(.*)", "dest": "/php_app/uploads/$1" },
+    { "src": "/index", "dest": "/php_app/index.php" },
+    { "src": "/(.*).php", "dest": "/php_app/$1.php" },
+    { "src": "/(.*)", "dest": "/php_app/index.php" }
   ]
 }
