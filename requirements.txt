@@ -1,0 +1,7 @@
+flask
+joblib
+pandas
+scikit-learn==1.6.1
+pytesseract
+Pillow
+gunicorn
