@@ -1,10 +1,6 @@
 <?php
-// Check if running locally or on InfinityFree
-if ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
-    // Local XAMPP Connection
-    $conn = mysqli_connect("localhost", "root", "", "scamshield_db");
-    $api_base_url = "http://127.0.0.1:5000";
-} else {
+// Check if running on Vercel or locally
+if (getenv('VERCEL') == '1' || ($_SERVER['HTTP_HOST'] != 'localhost' && $_SERVER['REMOTE_ADDR'] != '127.0.0.1' && $_SERVER['HTTP_HOST'] != '127.0.0.1')) {
     // Live Connections (InfinityFree / Vercel)
     $db_host = getenv('DB_HOST') ?: "sql200.infinityfree.com";
     $db_user = getenv('DB_USER') ?: "if0_41241884";
@@ -21,6 +17,10 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['REMOTE_ADDR'] == '127.0.0.
         // Fallback to existing Render API for InfinityFree or others
         $api_base_url = "https://scamshield-cplu.onrender.com";
     }
+} else {
+    // Local XAMPP Connection
+    $conn = mysqli_connect("localhost", "root", "", "scamshield_db");
+    $api_base_url = "http://127.0.0.1:5000";
 }
 
 if (!$conn) {
