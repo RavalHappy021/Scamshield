@@ -43,6 +43,8 @@ def home():
         "status": "online",
         "message": "ScamShield AI API is running",
         "sklearn_version": sklearn.__version__,
+        "model_loaded": model is not None,
+        "vectorizer_loaded": vectorizer is not None,
         "endpoints": ["/predict", "/predict-image"]
     })
 
