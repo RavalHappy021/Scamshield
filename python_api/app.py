@@ -45,6 +45,7 @@ def home():
         "sklearn_version": sklearn.__version__,
         "model_loaded": model is not None,
         "vectorizer_loaded": vectorizer is not None,
+        "debug_timestamp": "2026-03-18 20:50",
         "endpoints": ["/predict", "/predict-image"]
     })
 
