@@ -74,12 +74,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             curl_close($ch);
 
             if ($httpCode === 0) {
-                echo json_encode(["status" => "error", "message" => "API Connection Failed: The remote detection service is unreachable."]);
+                $curl_error = curl_error($ch);
+                echo json_encode(["status" => "error", "message" => "Image API Connection Failed: " . $curl_error]);
                 exit();
             }
 
             if ($httpCode !== 200 || !$response) {
-                echo json_encode(["status" => "error", "message" => "API Error (Code $httpCode): Unable to reach analysis engine."]);
+                // Log raw response for debugging if possible
+                $short_response = substr(strip_tags($response), 0, 100);
+                echo json_encode(["status" => "error", "message" => "Image API Error (Code $httpCode): " . $short_response]);
                 exit();
             }
 
@@ -118,17 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         curl_close($ch);
 
         if ($httpCode === 0) {
-            echo json_encode(["status" => "error", "message" => "API Connection Failed: The remote detection service is unreachable."]);
+            $curl_error = curl_error($ch);
+            echo json_encode(["status" => "error", "message" => "API Connection Failed: " . $curl_error]);
             exit();
         }
 
         if ($httpCode !== 200 || !$response) {
-            // Check if response contains "Unauthorized"
-            if (strpos($response, 'Unauthorized') !== false) {
-                echo json_encode(["status" => "error", "message" => "API Error: Access Denied by Remote Server (Unauthorized)"]);
-            } else {
-                echo json_encode(["status" => "error", "message" => "API Error (Code $httpCode): Unable to reach analysis engine."]);
-            }
+            // Log raw response for debugging if possible
+            $short_response = substr(strip_tags($response), 0, 100);
+            echo json_encode(["status" => "error", "message" => "API Error (Code $httpCode): " . $short_response]);
             exit();
         }
 
