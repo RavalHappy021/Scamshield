@@ -94,7 +94,7 @@ def predict():
         })
     except Exception as e:
         print(f"Prediction Error: {str(e)}")
-        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 500
+        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 200
 
 @app.route("/predict-image", methods=["POST"])
 def predict_image():
@@ -142,7 +142,7 @@ def predict_image():
         }), 200
     except Exception as e:
         print(f"Prediction Error: {str(e)}")
-        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 500
+        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
