@@ -14,7 +14,7 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['REMOTE_ADDR'] == '127.0.0.
         $api_base_url = $protocol . $_SERVER['HTTP_HOST'] . "/api";
     } else {
         // Fallback to existing Render API for InfinityFree or others
-        $api_base_url = "https://scamshield-luez.onrender.com";
+        $api_base_url = "https://scamshield-cplu.onrender.com";
     }
 }
 
