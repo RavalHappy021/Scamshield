@@ -169,19 +169,35 @@ $resultClass = "";
 <script>
 // Image Preview Logic
 document.getElementById('job_image_input').addEventListener('change', function(event) {
+    handleImageSelection(event.target.files[0]);
+});
+
+// Ctrl+V Paste Support
+window.addEventListener('paste', e => {
+    const activeTab = document.querySelector('.nav-link.active').id;
+    if (activeTab === 'pills-image-tab' && e.clipboardData.files.length > 0) {
+        handleImageSelection(e.clipboardData.files[0]);
+    }
+});
+
+function handleImageSelection(file) {
+    if(!file) return;
     const reader = new FileReader();
     const previewArea = document.getElementById('imagePreview');
     const previewImg = document.getElementById('previewImg');
-    
+    const imageInput = document.getElementById('job_image_input');
+
     reader.onload = function() {
         previewImg.src = reader.result;
         previewArea.style.display = 'block';
     }
     
-    if(event.target.files[0]) {
-        reader.readAsDataURL(event.target.files[0]);
-    }
-});
+    reader.readAsDataURL(file);
+
+    // If it's a pasted file, we need a way to store it since input.files is read-only
+    // We'll store it on the input element itself for triggerCheck to find
+    imageInput.pastedFile = file;
+}
 
 function triggerCheck() {
     const text = document.getElementById('job_text_input').value.trim();
@@ -198,11 +214,12 @@ function triggerCheck() {
     const formData = new FormData();
 
     if (activeTab === 'pills-image-tab') {
-        if (!imageInput.files[0]) {
-            alert('Please select an image first!');
+        const fileToUpload = imageInput.pastedFile || imageInput.files[0];
+        if (!fileToUpload) {
+            alert('Please select or paste an image first!');
             return;
         }
-        formData.append('image', imageInput.files[0]);
+        formData.append('image', fileToUpload);
     } else {
         if (text.length < 20) {
             alert('Please enter more details (at least 20 characters)...');
