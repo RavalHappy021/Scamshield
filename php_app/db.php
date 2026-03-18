@@ -6,7 +6,12 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['REMOTE_ADDR'] == '127.0.0.
     $api_base_url = "http://127.0.0.1:5000";
 } else {
     // Live Connections (InfinityFree / Vercel)
-    $conn = mysqli_connect("sql200.infinityfree.com", "if0_41241884", "ScamScam54321", "if0_41241884_myproject");
+    $db_host = getenv('DB_HOST') ?: "sql200.infinityfree.com";
+    $db_user = getenv('DB_USER') ?: "if0_41241884";
+    $db_pass = getenv('DB_PASS') ?: "ScamScam54321";
+    $db_name = getenv('DB_NAME') ?: "if0_41241884_myproject";
+
+    $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
     
     // Auto-detect environment
     if (strpos($_SERVER['HTTP_HOST'], 'vercel.app') !== false) {
