@@ -17,9 +17,18 @@ if(isset($_POST['login'])){
     if(mysqli_num_rows($query) == 1){
 
         $row = mysqli_fetch_assoc($query);
+        $intended_role = $_POST['login_role'] ?? 'user';
 
-        // password verify
-        if(password_verify($password, $row['password'])){
+        // Check if user is trying to login through Admin Portal but is not an admin
+        if ($intended_role === 'admin' && $row['role'] !== 'admin') {
+            $msg = "Access Denied: You do not have administrator privileges!";
+        } 
+        // Check if admin is trying to login through User Access
+        else if ($intended_role === 'user' && $row['role'] === 'admin') {
+            $msg = "Admins must use the Admin Portal tab!";
+        }
+        // Password verify
+        else if(password_verify($password, $row['password'])){
 
             // ✅ Store user data in session
             $_SESSION['user_id'] = $row['id'];      // important for history
@@ -27,7 +36,12 @@ if(isset($_POST['login'])){
             $_SESSION['email'] = $row['email'];
             $_SESSION['role'] = $row['role'];       // Store user role
 
-            header("Location: dashboard.php");
+            // ✅ Redirect based on role
+            if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+                header("Location: admin_dashboard.php");
+            } else {
+                header("Location: dashboard.php");
+            }
             exit();
 
         } else {
@@ -44,10 +58,14 @@ if(isset($_POST['login'])){
 <!DOCTYPE html>
 <html>
 <head>
-<title>ScamShield - Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield - Login</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         body {
@@ -112,22 +130,64 @@ if(isset($_POST['login'])){
             padding: 12px 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
         }
         .btn-register:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #00d2ff;
+        }
+
+        /* Admin Mode Styling */
+        .admin-mode .login-header {
+            background: linear-gradient(45deg, #ff007c, #ff8c00);
+        }
+        .admin-mode .btn-login {
+            background: linear-gradient(45deg, #ff007c, #ff8c00);
+        }
+        .admin-mode .form-control:focus {
+            border-color: #ff007c;
+        }
+
+        .login-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .login-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.4);
+            transition: all 0.3s;
+        }
+        .login-tab.active {
+            color: white;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 2px solid #00d2ff;
+        }
+        .admin-mode .login-tab.active {
+            border-bottom-color: #ff007c;
         }
     </style>
 
 </head>
 <body>
 
-<div class="page-wrapper">
-    <div class="card shadow login-card animate__animated animate__fadeIn">
+<div class="page-wrapper" id="loginWrapper">
+    <div class="card shadow login-card animate__animated animate__fadeIn" id="loginCard">
+
+        <div class="login-tabs">
+            <div class="login-tab active" onclick="setLoginMode('user')">User Access</div>
+            <div class="login-tab" onclick="setLoginMode('admin')">Admin Portal</div>
+        </div>
 
         <div class="login-header">
-            <h3>🛡 ScamShield Login</h3>
-            <p class="mb-0">Secure access to your account</p>
+            <h3 id="loginTitle">🛡 ScamShield Login</h3>
+            <p class="mb-0" id="loginSubtitle">Secure access to your account</p>
         </div>
 
         <div class="card-body p-4 text-white">
@@ -139,6 +199,8 @@ if(isset($_POST['login'])){
             <?php } ?>
 
             <form method="post">
+                <!-- Hidden field to track User vs Admin mode -->
+                <input type="hidden" name="login_role" id="loginRole" value="user">
 
                 <div class="mb-3">
                     <label class="form-label text-white">Username or Email</label>
@@ -154,7 +216,7 @@ if(isset($_POST['login'])){
 
                 <div class="d-flex justify-content-between align-items-center mt-4">
 
-                    <a href="register.php" class="btn btn-outline-primary btn-register">
+                    <a href="register.php" class="btn-register">
                         <i class="fa-solid fa-user-plus"></i> Register
                     </a>
 
@@ -173,8 +235,31 @@ if(isset($_POST['login'])){
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 
+    <script>
+        function setLoginMode(mode) {
+            const card = document.getElementById('loginCard');
+            const title = document.getElementById('loginTitle');
+            const subtitle = document.getElementById('loginSubtitle');
+            const tabs = document.querySelectorAll('.login-tab');
+            const roleInput = document.getElementById('loginRole');
+
+            tabs.forEach(t => t.classList.remove('active'));
+
+            if (mode === 'admin') {
+                card.classList.add('admin-mode');
+                title.innerHTML = '<i class="fa-solid fa-crown me-2"></i>Admin Login';
+                subtitle.innerText = 'Platform Management Access';
+                tabs[1].classList.add('active');
+                roleInput.value = 'admin';
+            } else {
+                card.classList.remove('admin-mode');
+                title.innerHTML = '🛡 ScamShield Login';
+                subtitle.innerText = 'Secure access to your account';
+                tabs[0].classList.add('active');
+                roleInput.value = 'user';
+            }
+        }
+    </script>
 </body>
 </html>
