@@ -17,10 +17,5 @@
       "src": "/",
       "dest": "/api/index.php"
     }
-  ],
-  "build": {
-    "env": {
-      "FORCE_REDEPLOY": "2026-04-05_V18"
-    }
-  }
+  ]
 }
