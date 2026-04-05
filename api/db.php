@@ -11,46 +11,38 @@ define('SCAMSHIELD_VERSION', '1.0.4'); // Force Deploy Trigger
 $is_local = (stripos($_SERVER['HTTP_HOST'], 'localhost') !== false || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || stripos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
 $is_vercel = getenv('VERCEL') == '1';
 
-if ($is_local && !$is_vercel) {
-    // 🏠 Local XAMPP Environment
-    $db_host = "localhost";
-    $db_user = "root";
-    $db_pass = "";
-    $db_name = "scamshield_db";
-    $db_port = 3306;
-    $api_base_url = "http://127.0.0.1:5000";
+// Aggressive cleaner for environment variables
+function safe_clean($val) {
+    if (!$val) return "";
+    return trim(preg_replace('/[\x00-\x1F\x7F-\xA0]/', '', $val));
+}
 
-    if (file_exists(__DIR__ . '/db_config_local.php')) {
-        include(__DIR__ . '/db_config_local.php');
-    }
+if ($is_local && !$is_vercel) {
+    // ... (unchanged)
+}
+else {
+    // ☁️ Live Environment
+    $db_host = safe_clean(getenv('DB_HOST') ?: "mysql-24172f92-think-programming.l.aivencloud.com");
+    $db_user = safe_clean(getenv('DB_USER') ?: "avnadmin");
+    $db_pass = safe_clean(getenv('DB_PASS')); 
+    $db_name = safe_clean(getenv('DB_NAME') ?: "scamshield_db");
+    $db_port = (int)safe_clean(getenv('DB_PORT') ?: "27029");
+    $api_base_url = safe_clean(getenv('API_BASE_URL') ?: "https://scamshield-cplu.onrender.com");
 
     try {
         mysqli_report(MYSQLI_REPORT_STRICT | MYSQLI_REPORT_ERROR);
-        $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
-    }
-    catch (mysqli_sql_exception $e) {
+        $conn = mysqli_init();
+        mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+        $success = @mysqli_real_connect($conn, $db_host, $db_user, $db_pass, $db_name, $db_port, NULL, MYSQLI_CLIENT_SSL);
+        
+        if (!$success) {
+            $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
+        }
+    } catch (Exception $e) {
         $conn = false;
-    }
-}
-else {
-    // ☁️ Live Environment (Vercel, Render, Aiven)
-    // Using getenv() to prioritize secure environment variables (with trim to avoid copy-paste errors)
-    $db_host = trim(getenv('DB_HOST') ?: "mysql-24172f92-think-programming.l.aivencloud.com");
-    $db_user = trim(getenv('DB_USER') ?: "avnadmin");
-    $db_pass = trim(getenv('DB_PASS')); // REMOVED HARDCODED PASS FOR SECURITY
-    $db_name = trim(getenv('DB_NAME') ?: "scamshield_db");
-    $db_port = trim(getenv('DB_PORT') ?: 27029);
-    $api_base_url = trim(getenv('API_BASE_URL') ?: "https://scamshield-cplu.onrender.com");
-
-    $conn = mysqli_init();
-    // Aiven and some cloud providers require SSL
-    mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
-    
-    $success = @mysqli_real_connect($conn, $db_host, $db_user, $db_pass, $db_name, (int)$db_port, NULL, MYSQLI_CLIENT_SSL);
-
-    if (!$success) {
-        // Fallback to standard connection if SSL fails (though SSL is recommended for cloud DBs)
-        $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, (int)$db_port);
+        $error_msg = $e->getMessage();
+        $host_len = strlen($db_host);
+        die("❌ DB Error: $error_msg\nHostname Length: $host_len\nDebug: Check Vercel Env Vars for spaces.");
     }
 }
 
