@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/*.php": {
+    "php_app/*.php": {
       "runtime": "vercel-php@0.7.0"
     },
     "*.php": {
@@ -10,15 +10,15 @@
   "routes": [
     {
       "src": "/(assets|uploads)/(.*)",
-      "dest": "/$1/$2"
+      "dest": "/php_app/$1/$2"
     },
     {
-      "src": "/(.*).php",
-      "dest": "/$1.php"
+      "src": "/(?:php_app/)?(.*).php",
+      "dest": "/php_app/$1.php"
     },
     {
       "src": "/",
-      "dest": "/index.php"
+      "dest": "/php_app/index.php"
     }
   ]
 }
