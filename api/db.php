@@ -5,6 +5,8 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+define('SCAMSHIELD_VERSION', '1.0.4'); // Force Deploy Trigger
+
 
 $is_local = (stripos($_SERVER['HTTP_HOST'], 'localhost') !== false || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || stripos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
 $is_vercel = getenv('VERCEL') == '1';
@@ -32,13 +34,13 @@ if ($is_local && !$is_vercel) {
 }
 else {
     // ☁️ Live Environment (Vercel, Render, Aiven)
-    // Using getenv() to prioritize secure environment variables
-    $db_host = getenv('DB_HOST') ?: "mysql-24172f92-think-programming.l.aivencloud.com";
-    $db_user = getenv('DB_USER') ?: "avnadmin";
-    $db_pass = getenv('DB_PASS'); // REMOVED HARDCODED PASS FOR SECURITY
-    $db_name = getenv('DB_NAME') ?: "scamshield_db";
-    $db_port = getenv('DB_PORT') ?: 27029;
-    $api_base_url = getenv('API_BASE_URL') ?: "https://scamshield-cplu.onrender.com";
+    // Using getenv() to prioritize secure environment variables (with trim to avoid copy-paste errors)
+    $db_host = trim(getenv('DB_HOST') ?: "mysql-24172f92-think-programming.l.aivencloud.com");
+    $db_user = trim(getenv('DB_USER') ?: "avnadmin");
+    $db_pass = trim(getenv('DB_PASS')); // REMOVED HARDCODED PASS FOR SECURITY
+    $db_name = trim(getenv('DB_NAME') ?: "scamshield_db");
+    $db_port = trim(getenv('DB_PORT') ?: 27029);
+    $api_base_url = trim(getenv('API_BASE_URL') ?: "https://scamshield-cplu.onrender.com");
 
     $conn = mysqli_init();
     // Aiven and some cloud providers require SSL

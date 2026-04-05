@@ -7,5 +7,4 @@ php_app/db_config_local.php
 node_modules
 *.log
 *.sql
-*.txt
 *.md
