@@ -5,7 +5,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-define('SCAMSHIELD_VERSION', '1.0.4'); // Force Deploy Trigger
+define('SCAMSHIELD_VERSION', '1.0.5'); // Force Deploy Trigger Fix
 
 
 $is_local = (stripos($_SERVER['HTTP_HOST'], 'localhost') !== false || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || stripos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
@@ -14,11 +14,22 @@ $is_vercel = getenv('VERCEL') == '1';
 // Aggressive cleaner for environment variables
 function safe_clean($val) {
     if (!$val) return "";
+    // Remove all non-printable characters and whitespace
+    $val = str_replace(array("\r", "\n", "\t", "\x0B", "\0"), "", $val);
     return trim(preg_replace('/[\x00-\x1F\x7F-\xA0]/', '', $val));
 }
 
 if ($is_local && !$is_vercel) {
-    // ... (unchanged)
+    if (file_exists("db_config_local.php")) {
+        include "db_config_local.php";
+    } else {
+        $db_host = "localhost";
+        $db_user = "root";
+        $db_pass = "";
+        $db_name = "scamshield_db";
+        $db_port = 3306;
+    }
+    $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
 }
 else {
     // ☁️ Live Environment
@@ -42,7 +53,14 @@ else {
         $conn = false;
         $error_msg = $e->getMessage();
         $host_len = strlen($db_host);
-        die("❌ DB Error: $error_msg\nHostname Length: $host_len\nDebug: Check Vercel Env Vars for spaces.");
+        
+        // Detailed error reporting for Vercel troubleshooting
+        header("Content-Type: text/plain");
+        die("❌ DB Error: $error_msg\n" .
+            "Hostname Used: '$db_host'\n" .
+            "Hostname Length: $host_len characters\n" .
+            "Note: If length looks wrong, check for hidden spaces in Vercel Env Vars.\n" .
+            "Aiven Tip: Ensure the service 'mysql-24172f92' is active in your dashboard.");
     }
 }
 
