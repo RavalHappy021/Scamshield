@@ -113,7 +113,10 @@ $result = mysqli_query($conn, $sql);
     <div class="admin-section">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-5">
-                <h1 class="fw-bold m-0 text-gradient">Support Inbox</h1>
+                <div>
+                    <a href="admin_dashboard.php" class="text-white-50 text-decoration-none small mb-2 d-block"><i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard</a>
+                    <h1 class="fw-bold m-0 text-gradient">Support Inbox</h1>
+                </div>
                 <span class="badge bg-primary rounded-pill"><?php echo mysqli_num_rows($result); ?> Messages</span>
             </div>
 

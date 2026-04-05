@@ -178,17 +178,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // ---------- SAVE TO DB (Only for logged-in users) ----------
-    if (isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
-        $username = $_SESSION['user'];
+    // ---------- SAVE TO DB ----------
+    $user_id = $_SESSION['user_id'] ?? null;
+    $username = $_SESSION['user'] ?? 'Guest';
 
-        $stmt = $conn->prepare(
-            "INSERT INTO job_history (user_id, username, job_text, result, reason, confidence) VALUES (?, ?, ?, ?, ?, ?)"
-        );
-        $stmt->bind_param("issssd", $user_id, $username, $job_text, $prediction, $reason, $confidence);
-        $stmt->execute();
-    }
+    $stmt = $conn->prepare(
+        "INSERT INTO job_history_v2 (user_id, username, job_text, result, reason, confidence) VALUES (?, ?, ?, ?, ?, ?)"
+    );
+    $stmt->bind_param("issssd", $user_id, $username, $job_text, $prediction, $reason, $confidence);
+    $stmt->execute();
 
     echo json_encode([
         "status" => "success",

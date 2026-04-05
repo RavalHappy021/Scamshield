@@ -1,28 +1,19 @@
-<?php 
-include "navbar.php";
+<?php
 include "db.php";
-
 // Guest access allowed
 $result = "";
 $resultClass = "";
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>ScamShield - Check Job</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield - Check Job</title>
     
+    <?php include "header_imports.php"; ?>
+
     <style>
-        body {
-            background-color: #0f2027;
-            color: #ffffff;
-            font-family: 'Outfit', sans-serif;
-            min-height: 100vh;
-        }
         .page-wrapper {
             display: flex;
             align-items: center;
@@ -88,6 +79,8 @@ $resultClass = "";
         }
     </style>
 </head>
+<body>
+<?php include "navbar.php"; ?>
 
 <div class="page-wrapper">
 <div class="card login-card animate__animated animate__zoomIn">
@@ -102,12 +95,12 @@ $resultClass = "";
             <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active rounded-pill px-4" id="pills-text-tab" data-bs-toggle="pill" data-bs-target="#pills-text" type="button" role="tab">
-                        📝 Text Analysis <span class="badge bg-success ms-1" style="font-size: 0.6rem;">Stable</span>
+                        📝 Text Analysis
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link rounded-pill px-4" id="pills-image-tab" data-bs-toggle="pill" data-bs-target="#pills-image" type="button" role="tab">
-                        🖼 Image Analysis <span class="badge bg-warning text-dark ms-1" style="font-size: 0.6rem;">Beta</span>
+                        🖼 Image Analysis
                     </button>
                 </li>
             </ul>

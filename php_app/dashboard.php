@@ -1,5 +1,4 @@
 <?php
-include "navbar.php";
 include "db.php";
 include "stats_helper.php";
 
@@ -21,30 +20,16 @@ $safety_class = 'text-success';
 if($safety_score < 50) $safety_class = 'text-danger';
 elseif($safety_score < 80) $safety_class = 'text-warning';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | ScamShield</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <?php include "header_imports.php"; ?>
+
     <style>
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --accent-blue: #00d2ff;
-            --accent-gradient: linear-gradient(45deg, #00d2ff, #3a7bd5);
-        }
-
-        body {
-            background-color: #0c151b;
-            color: #e0e0e0;
-            font-family: 'Outfit', sans-serif;
-            overflow-x: hidden;
-        }
-
         .dashboard-wrapper {
             padding: 40px 0;
         }
@@ -158,6 +143,7 @@ elseif($safety_score < 80) $safety_class = 'text-warning';
     </style>
 </head>
 <body>
+<?php include "navbar.php"; ?>
 
 <div class="container dashboard-wrapper">
     <!-- Welcome Header -->

@@ -7,6 +7,7 @@ python_api/.env
 # PHP
 php_app/uploads/*
 !php_app/uploads/.gitkeep
+php_app/db_config_local.php
 
 # IDEs
 .vscode/

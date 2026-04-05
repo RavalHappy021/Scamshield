@@ -1,5 +1,4 @@
 <?php 
-include "navbar.php";
 include "db.php";
 
 if(!isset($_SESSION['user_id'])){
@@ -8,7 +7,7 @@ if(!isset($_SESSION['user_id'])){
 }
 
 $user_id = $_SESSION['user_id'];
-$query = "SELECT * FROM job_history WHERE user_id = ? ORDER BY created_at DESC";
+$query = "SELECT * FROM job_history_v2 WHERE user_id = ? ORDER BY created_at DESC";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -20,8 +19,9 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activity History | ScamShield</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <?php include "header_imports.php"; ?>
+
     <style>
         body {
             background-color: #0c151b;
@@ -108,6 +108,7 @@ $result = $stmt->get_result();
     </style>
 </head>
 <body>
+<?php include "navbar.php"; ?>
 
 <div class="container dashboard-container">
     <div class="row">

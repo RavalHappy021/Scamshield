@@ -4,21 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ?>
 
-<!-- Google Fonts & Icons -->
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
-:root {
-    --nav-bg: rgba(15, 32, 39, 0.85);
-    --accent-blue: #00d2ff;
-    --accent-gradient: linear-gradient(45deg, #00d2ff, #3a7bd5);
-}
-
-body {
-    font-family: 'Outfit', sans-serif;
-}
-
 .navbar {
     background: var(--nav-bg) !important;
     backdrop-filter: blur(15px);
@@ -40,6 +26,7 @@ body {
     font-weight: 500;
     margin: 0 5px;
     transition: color 0.3s;
+    color: rgba(255,255,255,0.7) !important;
 }
 
 .nav-link:hover {
