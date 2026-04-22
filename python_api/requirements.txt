@@ -5,3 +5,5 @@ pytesseract
 Pillow
 werkzeug
 gunicorn
+joblib
+scikit-learn
