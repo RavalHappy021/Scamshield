@@ -1,7 +1,9 @@
 <?php
-include "navbar.php";
-include "db.php";
-include "stats_helper.php";
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+include_once "db.php";
+include_once "stats_helper.php";
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -21,15 +23,14 @@ $safety_class = 'text-success';
 if($safety_score < 50) $safety_class = 'text-danger';
 elseif($safety_score < 80) $safety_class = 'text-warning';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | ScamShield</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <?php include "header_assets.php"; ?>
     <style>
         :root {
             --glass-bg: rgba(255, 255, 255, 0.05);
@@ -116,8 +117,10 @@ elseif($safety_score < 80) $safety_class = 'text-warning';
         }
 
         .table-glass {
-            background: transparent;
-            color: #e0e0e0;
+            color: white !important;
+            background: #111 !important;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         .table-glass thead th {
@@ -130,6 +133,8 @@ elseif($safety_score < 80) $safety_class = 'text-warning';
         }
 
         .table-glass tbody td {
+            color: white !important;
+            background: transparent !important;
             border-bottom: 1px solid rgba(255,255,255,0.03);
             padding: 15px;
             vertical-align: middle;
@@ -158,6 +163,7 @@ elseif($safety_score < 80) $safety_class = 'text-warning';
     </style>
 </head>
 <body>
+    <?php include "navbar.php"; ?>
 
 <div class="container dashboard-wrapper">
     <!-- Welcome Header -->
@@ -215,7 +221,7 @@ elseif($safety_score < 80) $safety_class = 'text-warning';
                     <a href="history.php" class="btn btn-sm btn-outline-info rounded-pill px-3">View All</a>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-glass">
+                    <table class="table table-dark table-glass">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -224,15 +230,18 @@ elseif($safety_score < 80) $safety_class = 'text-warning';
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if($user_stats['recent_activity']->num_rows > 0): ?>
-                                <?php while($row = $user_stats['recent_activity']->fetch_assoc()): ?>
+                            <?php 
+                            $activity = $user_stats['recent_activity'] ?? null;
+                            if($activity && $activity->num_rows > 0): 
+                            ?>
+                                <?php while($row = $activity->fetch_assoc()): ?>
                                 <tr>
                                     <td class="small text-white-50">
                                         <?php echo date('M d', strtotime($row['created_at'])); ?>
                                     </td>
                                     <td>
                                         <div class="text-truncate" style="max-width: 250px;">
-                                            <?php echo htmlspecialchars($row['job_text']); ?>
+                                            <?php echo !empty($row['job_text']) ? htmlspecialchars($row['job_text']) : '<i class="opacity-50">No text provided</i>'; ?>
                                         </div>
                                     </td>
                                     <td>

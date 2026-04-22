@@ -15,3 +15,17 @@ php_app/uploads/*
 # OS
 .DS_Store
 Thumbs.db
+
+# Databases
+*.sql
+*.sqlite
+
+# Deployment
+.vercelignore
+.env
+.python-version
+
+# Logs
+logs/
+*.log
+supervisord.log

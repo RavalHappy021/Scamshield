@@ -1,6 +1,9 @@
 <?php
-include "db.php";
-session_start();
+include_once "db.php";
+include_once "stats_helper.php";
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 header('Content-Type: application/json');
 
@@ -183,8 +186,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user_id = $_SESSION['user_id'];
         $username = $_SESSION['user'];
 
+        $table = getHistoryTable($conn);
         $stmt = $conn->prepare(
-            "INSERT INTO job_history (user_id, username, job_text, result, reason, confidence) VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO $table (user_id, username, job_text, result, reason, confidence) VALUES (?, ?, ?, ?, ?, ?)"
         );
         $stmt->bind_param("issssd", $user_id, $username, $job_text, $prediction, $reason, $confidence);
         $stmt->execute();

@@ -1,6 +1,9 @@
 <?php 
-include "navbar.php";
-include "db.php";
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+include_once "db.php";
+include_once "stats_helper.php";
 
 if(!isset($_SESSION['user_id'])){
     header("Location: login.php");
@@ -8,7 +11,8 @@ if(!isset($_SESSION['user_id'])){
 }
 
 $user_id = $_SESSION['user_id'];
-$query = "SELECT * FROM job_history WHERE user_id = ? ORDER BY created_at DESC";
+$table = getHistoryTable($conn);
+$query = "SELECT * FROM $table WHERE user_id = ? ORDER BY created_at DESC";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -20,8 +24,8 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activity History | ScamShield</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <?php include "header_assets.php"; ?>
     <style>
         body {
             background-color: #0c151b;
@@ -56,8 +60,13 @@ $result = $stmt->get_result();
             background: transparent;
         }
         .table tbody tr {
-            background: rgba(255, 255, 255, 0.03);
+            background: #111 !important;
+            color: white !important;
             transition: transform 0.2s;
+        }
+        .table tbody td {
+            background: transparent !important;
+            color: white !important;
         }
         .table tbody tr:hover {
             background: rgba(255, 255, 255, 0.05);
@@ -108,6 +117,7 @@ $result = $stmt->get_result();
     </style>
 </head>
 <body>
+    <?php include "navbar.php"; ?>
 
 <div class="container dashboard-container">
     <div class="row">
@@ -124,7 +134,7 @@ $result = $stmt->get_result();
         <div class="col-12">
             <div class="history-card">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-dark">
                         <thead>
                             <tr>
                                 <th width="20%">Date & Time</th>
@@ -138,12 +148,12 @@ $result = $stmt->get_result();
                                 <?php while($row = $result->fetch_assoc()): ?>
                                 <tr>
                                     <td>
-                                        <div class="fw-bold text-dark small"><?php echo date('M d, Y', strtotime($row['created_at'])); ?></div>
-                                        <div class="text-muted" style="font-size: 0.75rem;"><?php echo date('h:i A', strtotime($row['created_at'])); ?></div>
+                                        <div class="fw-bold text-white small"><?php echo date('M d, Y', strtotime($row['created_at'])); ?></div>
+                                        <div class="text-white-50" style="font-size: 0.75rem;"><?php echo date('h:i A', strtotime($row['created_at'])); ?></div>
                                     </td>
                                     <td>
                                         <div class="job-text-preview" title="<?php echo htmlspecialchars($row['job_text']); ?>">
-                                            <?php echo htmlspecialchars($row['job_text']); ?>
+                                            <?php echo !empty($row['job_text']) ? htmlspecialchars($row['job_text']) : '<i class="opacity-50">No text provided</i>'; ?>
                                         </div>
                                     </td>
                                     <td>
@@ -154,7 +164,7 @@ $result = $stmt->get_result();
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <div class="reason-text">
+                                        <div class="reason-text text-white-50">
                                             <i class="fa-solid fa-quote-left me-1 opacity-50 small"></i>
                                             <?php echo htmlspecialchars($row['reason'] ?? 'Analysis based on job structure and language patterns.'); ?>
                                         </div>

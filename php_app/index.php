@@ -1,22 +1,20 @@
-<?php 
-include "navbar.php";
-include "stats_helper.php";
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+include_once "db.php";
+include_once "stats_helper.php";
 $stats = getStats($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ScamShield | Professional AI Job Protection</title>
-    
-    <!-- Bootstrap & Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <?php include "header_assets.php"; ?>
 
     <style>
         :root {
@@ -40,7 +38,7 @@ $stats = getStats($conn);
             display: flex;
             align-items: center;
             background: radial-gradient(circle at top right, rgba(0, 210, 255, 0.1), transparent),
-                        radial-gradient(circle at bottom left, rgba(58, 123, 213, 0.1), transparent);
+                radial-gradient(circle at bottom left, rgba(58, 123, 213, 0.1), transparent);
             position: relative;
         }
 
@@ -172,7 +170,7 @@ $stats = getStats($conn);
 
         .info-img-wrapper img {
             border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         .info-badge {
@@ -182,7 +180,7 @@ $stats = getStats($conn);
             background: var(--accent-gradient);
             padding: 15px 25px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         /* --- FOOTER --- */
@@ -232,7 +230,9 @@ $stats = getStats($conn);
         }
     </style>
 </head>
+
 <body>
+    <?php include "navbar.php"; ?>
 
     <!-- HERO SECTION -->
     <header class="hero-section">
@@ -240,15 +240,18 @@ $stats = getStats($conn);
             <div class="row align-items-center">
                 <div class="col-lg-6 animate__animated animate__fadeInLeft">
                     <h1 class="hero-title">Secure Your <br><span class="text-gradient">Professional</span> Future.</h1>
-                    <p class="hero-lead">AI-powered job scam detection designed to protect you from fraudulent offers and career traps.</p>
+                    <p class="hero-lead">AI-powered job scam detection designed to protect you from fraudulent offers
+                        and career traps.</p>
                     <div class="d-flex gap-3">
                         <a href="check_job.php" class="btn-premium">Scan a Job Offer</a>
-                        <a href="tips.php" class="btn btn-outline-light rounded-pill px-4 py-3 fw-bold">Learn Safety Tips</a>
+                        <a href="tips.php" class="btn btn-outline-light rounded-pill px-4 py-3 fw-bold">Learn Safety
+                            Tips</a>
                     </div>
                 </div>
                 <div class="col-lg-5 offset-lg-1 d-none d-lg-block animate__animated animate__zoomIn">
                     <div class="info-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Security" class="img-fluid">
+                        <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                            alt="Security" class="img-fluid">
                         <div class="info-badge">
                             <span class="fw-bold">AI Active ✅</span>
                             <div class="small">Real-time analysis</div>
@@ -270,13 +273,15 @@ $stats = getStats($conn);
             </div>
             <div class="col-md-3">
                 <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s">
-                    <span class="stat-number text-gradient text-danger"><?php echo number_format($stats['total_scams']); ?></span>
+                    <span
+                        class="stat-number text-gradient text-danger"><?php echo number_format($stats['total_scams']); ?></span>
                     <span class="stat-label">Scams Detected</span>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card animate__animated animate__fadeInUp animate__delay-2s">
-                    <span class="stat-number text-gradient text-success"><?php echo number_format($stats['total_real']); ?></span>
+                    <span
+                        class="stat-number text-gradient text-success"><?php echo number_format($stats['total_real']); ?></span>
                     <span class="stat-label">Safe Offers Verified</span>
                 </div>
             </div>
@@ -300,7 +305,8 @@ $stats = getStats($conn);
                             <i class="fa-solid fa-brain"></i>
                         </div>
                         <h4>AI Analysis</h4>
-                        <p class="text-white-50">Advanced pattern recognition trained on thousands of confirmed scam and legitimate job offers.</p>
+                        <p class="text-white-50">Advanced pattern recognition trained on thousands of confirmed scam and
+                            legitimate job offers.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -309,7 +315,8 @@ $stats = getStats($conn);
                             <i class="fa-solid fa-bolt"></i>
                         </div>
                         <h4>Instant Results</h4>
-                        <p class="text-white-50">Just paste the text and get a prediction in seconds with a clear confidence score from our ML model.</p>
+                        <p class="text-white-50">Just paste the text and get a prediction in seconds with a clear
+                            confidence score from our ML model.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -318,7 +325,8 @@ $stats = getStats($conn);
                             <i class="fa-solid fa-clock-rotate-left"></i>
                         </div>
                         <h4>Full History</h4>
-                        <p class="text-white-50">Keep track of every job you've scanned. View your personal check history anytime in a clean dashboard.</p>
+                        <p class="text-white-50">Keep track of every job you've scanned. View your personal check
+                            history anytime in a clean dashboard.</p>
                     </div>
                 </div>
             </div>
@@ -329,7 +337,8 @@ $stats = getStats($conn);
     <section class="section-padding bg-dark">
         <div class="container text-center">
             <h2 class="fw-bold mb-4">Ready to scan your first job?</h2>
-            <p class="lead text-white-50 mb-5">Join thousands of users who have secured their career path with our AI detection.</p>
+            <p class="lead text-white-50 mb-5">Join thousands of users who have secured their career path with our AI
+                detection.</p>
             <a href="check_job.php" class="btn-premium px-5">Start Scanning Now</a>
         </div>
     </section>
@@ -340,7 +349,8 @@ $stats = getStats($conn);
             <div class="row g-5">
                 <div class="col-lg-4">
                     <a href="#" class="footer-logo">🛡 ScamShield</a>
-                    <p class="text-white-50">ScamShield is an open-source initiative dedicated to reducing recruitment fraud through artificial intelligence.</p>
+                    <p class="text-white-50">ScamShield is an open-source initiative dedicated to reducing recruitment
+                        fraud through artificial intelligence.</p>
                     <div class="mt-4">
                         <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
                         <a href="#" class="social-btn"><i class="fab fa-linkedin"></i></a>
@@ -356,14 +366,14 @@ $stats = getStats($conn);
                 <div class="col-lg-3 col-md-4">
                     <h6 class="fw-bold text-uppercase mb-4">Resources</h6>
                     <a href="tips.php" class="footer-link">Safety Guidelines</a>
-                    <a href="#" class="footer-link">Privacy Policy</a>
-                    <a href="#" class="footer-link">Terms of Service</a>
+                    <a href="privacy.php" class="footer-link">Privacy Policy</a>
+                    <a href="terms.php" class="footer-link">Terms of Service</a>
                 </div>
                 <div class="col-lg-3 col-md-4">
                     <h6 class="fw-bold text-uppercase mb-4">Support</h6>
-                    <a href="#" class="footer-link">Help Center</a>
+                    <a href="help.php" class="footer-link">Help Center</a>
                     <a href="contact.php" class="footer-link">Contact Us</a>
-                    <a href="#" class="footer-link">API Documentation</a>
+                    <a href="api_docs.php" class="footer-link">API Documentation</a>
                 </div>
             </div>
             <div class="text-center mt-5 pt-4 border-top border-secondary">
@@ -375,4 +385,5 @@ $stats = getStats($conn);
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
